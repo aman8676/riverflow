@@ -1,25 +1,34 @@
 import { z } from "zod";
 
-const envSchema = z.object({
+const publicEnvSchema = z.object({
   NEXT_PUBLIC_APPWRITE_ENDPOINT: z.string().url(),
   NEXT_PUBLIC_APPWRITE_PROJECT_ID: z.string().min(1),
-  APPWRITE_API_KEY: z.string().min(1),
 });
 
-const parsed = envSchema.safeParse(process.env);
+const publicParsed = publicEnvSchema.safeParse(process.env);
 
-if (!parsed.success) {
-  const missing = parsed.error.issues.map((i) => i.path.join(".")).join(", ");
+if (!publicParsed.success) {
+  const missing = publicParsed.error.issues.map((i) => i.path.join(".")).join(", ");
   throw new Error(
     `Missing or invalid environment variables: ${missing}. Check your .env file.`,
   );
 }
 
+const isServer = typeof window === "undefined";
+
+const apiKey = isServer ? process.env.APPWRITE_API_KEY : undefined;
+
+if (isServer && !apiKey) {
+  throw new Error(
+    "Missing environment variable: APPWRITE_API_KEY. Check your .env file.",
+  );
+}
+
 const env = {
   appwrite: {
-    endpoint: parsed.data.NEXT_PUBLIC_APPWRITE_ENDPOINT,
-    projectId: parsed.data.NEXT_PUBLIC_APPWRITE_PROJECT_ID,
-    apiKey: parsed.data.APPWRITE_API_KEY,
+    endpoint: publicParsed.data.NEXT_PUBLIC_APPWRITE_ENDPOINT,
+    projectId: publicParsed.data.NEXT_PUBLIC_APPWRITE_PROJECT_ID,
+    apiKey: apiKey ?? "",
   },
 };
 
