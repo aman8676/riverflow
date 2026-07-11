@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import Link from 'next/link';
 
 function RegisterPage() {
   const router = useRouter();
@@ -99,6 +100,17 @@ function RegisterPage() {
           {isLoading ? "Registering..." : "Register"}
         </Button>
       </form>
+      <p className="text-center text-sm text-gray-500">
+        Already have an account?{" "}
+        <Link href="/login" className="text-blue-600 hover:text-blue-700 font-medium">
+          Login
+        </Link>
+      </p>
+      <p className="text-center text-sm">
+        <Link href="/" className="text-gray-400 hover:text-gray-600">
+          ← Back to home
+        </Link>
+      </p>
     </div>
   );
 }

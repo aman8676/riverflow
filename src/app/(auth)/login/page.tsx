@@ -8,6 +8,7 @@ import { FaGithub } from "react-icons/fa";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import Link from 'next/link';
 
 function LoginPage() {
   const router = useRouter();
@@ -108,6 +109,17 @@ function LoginPage() {
           Continue with GitHub
         </Button>
       </form>
+      <p className="text-center text-sm text-slate-400">
+        Don&apos;t have an account?{" "}
+        <Link href="/register" className="text-purple-400 hover:text-purple-300 font-medium">
+          Register
+        </Link>
+      </p>
+      <p className="text-center text-sm">
+        <Link href="/" className="text-slate-500 hover:text-slate-300">
+          ← Back to home
+        </Link>
+      </p>
     </div>
   );
 }
