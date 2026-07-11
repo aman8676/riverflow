@@ -7,7 +7,7 @@ import {
   useMotionValue,
   useSpring,
 } from "motion/react"
-import { useTheme } from "next-themes"
+import { useTheme } from "@/components/ThemeProvider"
 
 import { cn } from "@/lib/utils"
 
@@ -72,16 +72,15 @@ export function MagicCard(props: MagicCardProps) {
   const glowSize = isOrbMode(props) ? (props.glowSize ?? 420) : 420
   const glowBlur = isOrbMode(props) ? (props.glowBlur ?? 60) : 60
   const glowOpacity = isOrbMode(props) ? (props.glowOpacity ?? 0.9) : 0.9
-  const { theme, systemTheme } = useTheme()
+  const { theme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => setMounted(true), [])
 
   const isDarkTheme = useMemo(() => {
     if (!mounted) return true
-    const currentTheme = theme === "system" ? systemTheme : theme
-    return currentTheme === "dark"
-  }, [theme, systemTheme, mounted])
+    return theme === "dark"
+  }, [theme, mounted])
 
   const mouseX = useMotionValue(-gradientSize)
   const mouseY = useMotionValue(-gradientSize)

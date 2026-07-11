@@ -1,6 +1,6 @@
 "use client";
 
-import { useTheme } from "next-themes";
+import { useTheme } from "@/components/ThemeProvider";
 import { useSyncExternalStore, useCallback } from "react";
 import { IconSun, IconMoon } from "@tabler/icons-react";
 
@@ -17,16 +17,16 @@ export default function ThemeToggle() {
   const hydrated = useHydrated();
 
   if (!hydrated) {
-    return <div className="h-9 w-9" />;
+    return <div className="h-8 w-8" />;
   }
 
   return (
     <button
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="relative flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-neutral-400 transition-all hover:bg-white/10 hover:text-neutral-200"
+      className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
       aria-label="Toggle theme"
     >
-      {theme === "dark" ? <IconSun size={18} /> : <IconMoon size={18} />}
+      {theme === "dark" ? <IconSun size={16} /> : <IconMoon size={16} />}
     </button>
   );
 }

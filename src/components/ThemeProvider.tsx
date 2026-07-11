@@ -20,14 +20,11 @@ const ThemeProvider = ({
   children,
   attribute = "class",
   defaultTheme = "dark",
-  enableSystem = false,
   storageKey = "theme",
 }: {
   children: React.ReactNode;
   attribute?: string;
   defaultTheme?: string;
-  enableSystem?: boolean;
-  disableTransitionOnChange?: boolean;
   storageKey?: string;
 }) => {
   const [theme, setThemeState] = useState<Theme>(() => {

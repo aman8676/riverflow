@@ -6,25 +6,20 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  const { session,hydrated } = useAuthStore();
+  const { session, hydrated } = useAuthStore();
   const router = useRouter();
 
   React.useEffect(() => {
     if (session && hydrated) {
-      console.log("Session exists, redirecting to home page...")
       router.replace("/");
     }
-  }, [session, router,hydrated]);
+  }, [session, router, hydrated]);
 
-
-    if (!hydrated) return null;
-
-    if (session) return null;
-
-
+  if (!hydrated) return null;
+  if (session) return null;
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center bg-neutral-950 antialiased overflow-hidden">
+    <div className="relative flex min-h-[calc(100vh-3.5rem)] items-center justify-center overflow-hidden px-4 py-12">
       <div className="pointer-events-none absolute inset-0">
         <BackgroundBeams />
       </div>

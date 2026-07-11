@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
+import { IconLoader2, IconMail, IconLock, IconArrowLeft } from '@tabler/icons-react';
 
 function LoginPage() {
   const router = useRouter();
@@ -18,7 +19,6 @@ function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email");
     const password = formData.get("password");
@@ -32,92 +32,111 @@ function LoginPage() {
     setError("");
 
     const loginResponse = await login(email.toString(), password.toString());
-
     if (loginResponse.error) {
       setError(loginResponse.error!.message);
     } else {
       router.push("/");
     }
-
     setIsLoading(false);
   };
 
   return (
-    <div className="w-full max-w-md p-8 space-y-3 rounded-xl bg-slate-900/80 backdrop-blur-sm border border-white/10 text-slate-200">
-      {error && <p className="text-sm text-red-400 text-center">{error}</p>}
-      <h1 className="text-2xl font-bold text-center text-white">Login</h1>
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-1">
-          <Label htmlFor="email" className="text-slate-300">
-            Email
-          </Label>
-          <Input
-            type="email"
-            name="email"
-            id="email"
-            className="border-white/10 bg-slate-950 text-white placeholder:text-slate-600 focus-visible:ring-purple-500"
-            placeholder="you@example.com"
-            required
-          />
+    <div className="w-full max-w-md space-y-6">
+      <Link
+        href="/"
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+      >
+        <IconArrowLeft className="h-4 w-4" />
+        Back to home
+      </Link>
+
+      <div className="rounded-2xl border border-border bg-card p-8 shadow-xl backdrop-blur-sm">
+        <div className="space-y-1 text-center">
+          <h1 className="text-2xl font-bold tracking-tight">Welcome back</h1>
+          <p className="text-sm text-muted-foreground">
+            Sign in to your account to continue
+          </p>
         </div>
 
-        <div className="space-y-1">
-          <Label htmlFor="password" className="text-slate-300">
-            Password
-          </Label>
-          <Input
-            type="password"
-            name="password"
-            id="password"
-            className="border-white/10 bg-slate-950 text-white placeholder:text-slate-600 focus-visible:ring-purple-500"
-            placeholder="••••••••"
-            required
-          />
-        </div>
-        <Button
-          type="submit"
-          disabled={isLoading}
-          className="w-full bg-purple-600 text-white hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
-          {isLoading ? "Logging in..." : "Login"}
-        </Button>
-        <div className="relative my-4">
+        {error && (
+          <div className="mt-4 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <div className="relative">
+              <IconMail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                type="email"
+                name="email"
+                id="email"
+                className="pl-10"
+                placeholder="you@example.com"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <div className="relative">
+              <IconLock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                type="password"
+                name="password"
+                id="password"
+                className="pl-10"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+          </div>
+
+          <Button type="submit" disabled={isLoading} className="w-full" size="lg">
+            {isLoading ? (
+              <IconLoader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              "Sign In"
+            )}
+          </Button>
+        </form>
+
+        <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-white/10" />
+            <span className="w-full border-t border-border" />
           </div>
           <div className="relative flex justify-center text-xs">
-            <span className="bg-slate-900 px-2 text-slate-500">or continue with</span>
+            <span className="bg-card px-2 text-muted-foreground">or continue with</span>
           </div>
         </div>
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full border-white/10 bg-slate-800/50 hover:bg-slate-700/50 text-slate-300 transition-colors"
-          onClick={() => loginWithOAuth(OAuthProvider.Google)}
-        >
-          <FcGoogle size={22} />
-          Continue with Google
-        </Button>
 
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full border-white/10 bg-slate-800/50 hover:bg-slate-700/50 text-slate-300 transition-colors"
-          onClick={() => loginWithOAuth(OAuthProvider.Github)}
-        >
-          <FaGithub size={22} />
-          Continue with GitHub
-        </Button>
-      </form>
-      <p className="text-center text-sm text-slate-400">
+        <div className="grid grid-cols-2 gap-3">
+          <Button
+            variant="outline"
+            type="button"
+            onClick={() => loginWithOAuth(OAuthProvider.Google)}
+          >
+            <FcGoogle className="h-5 w-5" />
+            Google
+          </Button>
+          <Button
+            variant="outline"
+            type="button"
+            onClick={() => loginWithOAuth(OAuthProvider.Github)}
+          >
+            <FaGithub className="h-5 w-5" />
+            GitHub
+          </Button>
+        </div>
+      </div>
+
+      <p className="text-center text-sm text-muted-foreground">
         Don&apos;t have an account?{" "}
-        <Link href="/register" className="text-purple-400 hover:text-purple-300 font-medium">
-          Register
-        </Link>
-      </p>
-      <p className="text-center text-sm">
-        <Link href="/" className="text-slate-500 hover:text-slate-300">
-          ← Back to home
+        <Link href="/register" className="font-medium text-foreground hover:underline">
+          Create one
         </Link>
       </p>
     </div>
