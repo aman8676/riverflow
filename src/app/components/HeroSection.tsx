@@ -24,15 +24,16 @@ export default async function HeroSection() {
   ]);
 
   return (
-    <HeroParallax
-      header={<HeroSectionHeader />}
-      products={questions.documents.map((q) => ({
-        title: q.title,
-        link: `/questions/${q.$id}/${slugify(q.title)}`,
-        thumbnail: q.attachmentId
-          ? getFilePreviewUrl(questionAttachmentBucket, q.attachmentId)
-          : FALLBACK_IMAGE,
-      }))}
-    />
+    // <HeroParallax
+    //   header={<HeroSectionHeader />}
+    //   products={questions.documents.map((q) => ({
+    //     title: q.title,
+    //     link: `/questions/${q.$id}/${slugify(q.title)}`,
+    //     thumbnail: q.attachmentId
+    //       ? getFilePreviewUrl(questionAttachmentBucket, q.attachmentId)
+    //       : FALLBACK_IMAGE,
+    //   }))}
+    // />
+    <HeroSectionHeader />
   );
 }
