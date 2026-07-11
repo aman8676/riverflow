@@ -55,10 +55,10 @@ const HeroSectionHeader = () => {
       <div className="relative z-10 grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="flex items-center justify-center">
           <div className="space-y-4 text-center">
-            <h1 className="pointer-events-none z-10 whitespace-pre-wrap bg-gradient-to-b from-[#ffd319] via-[#ff2975] to-[#8c1eff] bg-clip-text text-center text-7xl font-bold leading-none tracking-tighter text-transparent">
+            <h1 className="pointer-events-none z-10 whitespace-pre-wrap bg-gradient-to-b from-[#ffd319] via-[#ff2975] to-[#8c1eff] bg-clip-text text-center text-7xl font-bold leading-none tracking-tighter text-transparent font-manrope">
               RiverFlow
             </h1>
-            <p className="text-center text-xl font-bold leading-none tracking-tighter">
+            <p className="text-center text-xl font-bold leading-none tracking-tighter font-manrope">
               Ask questions, share knowledge, and collaborate with developers
               worldwide. Join our community and enhance your coding skills!
             </p>
@@ -82,7 +82,7 @@ const HeroSectionHeader = () => {
                   </Link>
                   <Link
                     href="/login"
-                    className="relative rounded-full border border-neutral-200 px-8 py-3 font-medium text-black dark:border-white/[0.2] dark:text-white"
+                    className="relative rounded-full border border-border px-8 py-3 font-medium text-foreground transition-colors hover:bg-muted"
                   >
                     <span>Login</span>
                     <span className="absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
