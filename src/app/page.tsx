@@ -4,7 +4,7 @@ import TopContributers from "@/app/components/TopContributers";
 
 export default function HomePage() {
   return (
-    <div className="relative z-10">
+    <div className="relative z-10 font-manrope">
       <HeroSection />
 
       <div className="container mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
