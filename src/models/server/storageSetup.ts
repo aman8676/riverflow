@@ -11,15 +11,11 @@ export default async function getOrCreateStorage() {
       await storage.createBucket(
         questionAttachmentBucket,
         questionAttachmentBucket,
-        [
-          Permission.create(Role.users()),
-          Permission.read(Role.any()),
-          Permission.update(Role.users()),
-          Permission.delete(Role.users()),
-        ],
-        false,
-        undefined,
-        undefined,
+        // Update/delete are granted per-file to the uploader only.
+        [Permission.create(Role.users()), Permission.read(Role.any())],
+        true, // fileSecurity
+        undefined, // enabled
+        undefined, // maximumFileSize
         ["jpg", "jpeg", "png", "gif", "bmp", "webp", "heic"],
       );
     } catch (error) {

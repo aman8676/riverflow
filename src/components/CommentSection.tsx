@@ -1,6 +1,7 @@
 "use client";
 
 import { databases } from "@/models/client/config";
+import { ownerPermissions } from "@/models/permissions";
 import { commentCollection, db } from "@/models/name";
 import { useAuthStore } from "@/store/auth";
 
@@ -40,7 +41,9 @@ const Comments = ({
                     authorId: user.$id,
                     type : type,
                     typeId: typeId,
-                });
+                },
+                ownerPermissions(user.$id),
+                );
 
                 setNewComment(() => "");
                 setComments((prev:any) =>({

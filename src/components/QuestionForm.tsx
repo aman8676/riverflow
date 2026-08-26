@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/store/auth";
 import { cn } from "@/lib/utils";
 import { databases, storage } from "@/models/client/config";
+import { ownerPermissions } from "@/models/permissions";
 import {
   questionAttachmentBucket,
   db,
@@ -108,6 +109,7 @@ const QuestionForm = ({ question }: { question?: QuestionDocument }) => {
         questionAttachmentBucket,
         ID.unique(),
         formData.attachment,
+        ownerPermissions(formData.authorId),
       );
       attachmentId = storageResponse.$id;
     }
@@ -123,6 +125,7 @@ const QuestionForm = ({ question }: { question?: QuestionDocument }) => {
         tags: Array.from(formData.tags),
         attachmentId: attachmentId,
       },
+      ownerPermissions(formData.authorId),
     );
 
     loadConfetti();
@@ -146,6 +149,7 @@ const QuestionForm = ({ question }: { question?: QuestionDocument }) => {
         questionAttachmentBucket,
         ID.unique(),
         formData.attachment,
+        ownerPermissions(question.authorId),
       );
 
       return file.$id;

@@ -4,12 +4,14 @@ import { databases } from "./config";
 import waitForAttributes from "@/lib/waitForAttributes";
 
 export default async function createCommentCollection() {
-  await databases.createCollection(db, commentCollection, commentCollection, [
-    Permission.read(Role.any()),
-    Permission.create(Role.users()),
-    Permission.update(Role.users()),
-    Permission.delete(Role.users()),
-  ]);
+  await databases.createCollection(
+    db,
+    commentCollection,
+    commentCollection,
+    // Update/delete are granted per-document to the author only.
+    [Permission.read(Role.any()), Permission.create(Role.users())],
+    true, // documentSecurity
+  );
 
   console.log("Comment collection created successfully");
 

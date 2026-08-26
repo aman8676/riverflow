@@ -4,12 +4,14 @@ import { databases } from "./config";
 import waitForAttributes from "@/lib/waitForAttributes";
 
 export default async function createAnswerCollection() {
-  await databases.createCollection(db, answerCollection, answerCollection, [
-    Permission.read(Role.any()),
-    Permission.create(Role.users()),
-    Permission.update(Role.users()),
-    Permission.delete(Role.users()),
-  ]);
+  await databases.createCollection(
+    db,
+    answerCollection,
+    answerCollection,
+    // Update/delete are granted per-document to the author only.
+    [Permission.read(Role.any()), Permission.create(Role.users())],
+    true, // documentSecurity
+  );
 
   console.log("Answer collection created successfully");
 

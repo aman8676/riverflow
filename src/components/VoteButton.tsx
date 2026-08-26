@@ -1,6 +1,7 @@
 "use client";
 
 import { databases } from "@/models/client/config";
+import { authedJsonHeaders } from "@/models/client/authHeaders";
 import { useAuthStore } from "@/store/auth";
 import { voteCollection, db } from "@/models/name";
 import { cn } from "@/lib/utils";
@@ -52,8 +53,8 @@ const VoteButtons = ({
     try {
       const response = await fetch(`/api/vote`, {
         method: "POST",
+        headers: await authedJsonHeaders(),
         body: JSON.stringify({
-          votedById: user.$id,
           voteStatus: "upvote",
           type,
           typeId: id,
@@ -79,8 +80,8 @@ const VoteButtons = ({
     try {
       const response = await fetch(`/api/vote`, {
         method: "POST",
+        headers: await authedJsonHeaders(),
         body: JSON.stringify({
-          votedById: user.$id,
           voteStatus: "downvote",
           type,
           typeId: id,

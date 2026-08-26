@@ -4,12 +4,14 @@ import { databases } from "./config";
 import waitForAttributes from "@/lib/waitForAttributes";
 
 export default async function createVoteCollection() {
-  await databases.createCollection(db, voteCollection, voteCollection, [
-    Permission.read(Role.any()),
-    Permission.create(Role.users()),
-    Permission.update(Role.users()),
-    Permission.delete(Role.users()),
-  ]);
+  await databases.createCollection(
+    db,
+    voteCollection,
+    voteCollection,
+    // Update/delete are granted per-document to the voter only.
+    [Permission.read(Role.any()), Permission.create(Role.users())],
+    true, // documentSecurity
+  );
 
   console.log("Vote collection created successfully");
 

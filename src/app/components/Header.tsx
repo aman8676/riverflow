@@ -7,6 +7,8 @@ import ThemeToggle from "@/components/ThemeToggle";
 import {
   IconHome,
   IconWorldQuestion,
+  IconLayoutDashboard,
+  IconListCheck,
   IconUser,
   IconLogout,
   IconLogin,
@@ -21,6 +23,8 @@ export default function Header() {
   const navLinks = [
     { label: "Home", href: "/", icon: IconHome },
     { label: "Questions", href: "/questions", icon: IconWorldQuestion },
+    { label: "Dashboard", href: "/dashboard", icon: IconLayoutDashboard },
+    { label: "Sheet", href: "/sheet", icon: IconListCheck },
   ];
 
   if (user) {

@@ -7,6 +7,9 @@ import {
 import { users } from "@/models/server/config";
 import { UserPrefs } from "@/store/auth";
 import { databases } from "@/models/server/config";
+import { getUserFromRequest } from "@/models/server/auth";
+import { ownerPermissions } from "@/models/permissions";
+import { adjustReputation } from "@/models/server/prefs";
 import { NextRequest, NextResponse } from "next/server";
 import { Query, ID } from "node-appwrite";
 
@@ -16,12 +19,31 @@ export async function POST(request: NextRequest) {
 
     let createdDocument: any = null;
 
-    const { votedById, voteStatus, type, typeId } = (await request.json()) as {
-      votedById: string;
+    // The voter is taken from the verified JWT so a caller cannot cast votes
+    // (or farm reputation) on behalf of somebody else.
+    const user = await getUserFromRequest(request);
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "You must be signed in to vote" },
+        { status: 401 },
+      );
+    }
+
+    const { voteStatus, type, typeId } = (await request.json()) as {
       voteStatus: "upvote" | "downvote";
       type: "question" | "answer";
       typeId: string;
     };
+
+    if (!voteStatus || !type || !typeId) {
+      return NextResponse.json(
+        { error: "voteStatus, type and typeId are required" },
+        { status: 400 },
+      );
+    }
+
+    const votedById = user.$id;
 
     // list-documents there would be no. of collection type typeId authorId and status is there whicha re basically attributes here
 
@@ -46,16 +68,11 @@ export async function POST(request: NextRequest) {
         typeId,
       );
 
-      const authorPrefs = await users.getPrefs<UserPrefs>(
+      // merges, so streak/bestStreak survive
+      await adjustReputation(
         QuestionOrAnswer.authorId,
+        response.documents[0].voteStatus === "upvote" ? -1 : 1,
       );
-
-      await users.updatePrefs(QuestionOrAnswer.authorId, {
-        reputation:
-          response.documents[0].voteStatus === "upvote"
-            ? Number(authorPrefs.reputation) - 1
-            : Number(authorPrefs.reputation) + 1,
-      });
     }
 
     // that means the prev vote does not exist or vote status changes
@@ -70,6 +87,7 @@ export async function POST(request: NextRequest) {
           voteStatus,
           votedById,
         },
+        ownerPermissions(votedById),
       );
 
       const QuestionOrAnswer = await databases.getDocument(
@@ -78,30 +96,22 @@ export async function POST(request: NextRequest) {
         typeId,
       );
 
-      // increase or decreae the reputation here
-
-      const authorPrefs = await users.getPrefs<UserPrefs>(
-        QuestionOrAnswer.authorId,
-      );
+      // increase or decreae the reputation here (merges, so streak survives)
 
       // if vote was present
       if (response.documents[0]) {
-        await users.updatePrefs<UserPrefs>(QuestionOrAnswer.authorId, {
-          reputation:
-            //that means the prev vote was "upvote"
-            //and new vote is "downvote" so decrease the reputation
-            response.documents[0].voteStatus === "upvote"
-              ? Number(authorPrefs.reputation) - 1
-              : Number(authorPrefs.reputation) + 1,
-        });
+        await adjustReputation(
+          QuestionOrAnswer.authorId,
+          //that means the prev vote was "upvote"
+          //and new vote is "downvote" so decrease the reputation
+          response.documents[0].voteStatus === "upvote" ? -1 : 1,
+        );
       } else {
-        await users.updatePrefs(QuestionOrAnswer.authorId, {
-          reputation:
-            // that means first time vote is done by the user
-            voteStatus === "upvote"
-              ? Number(authorPrefs.reputation) + 1
-              : Number(authorPrefs.reputation) - 1,
-        });
+        await adjustReputation(
+          QuestionOrAnswer.authorId,
+          // that means first time vote is done by the user
+          voteStatus === "upvote" ? 1 : -1,
+        );
       }
     }
 

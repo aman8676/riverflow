@@ -1,8 +1,7 @@
 import { databases, users } from "@/models/server/config";
 import { UserPrefs } from "@/store/auth";
 import React from "react";
-import { MagicCard } from "@/components/magicui/magic-card";
-import { NumberTicker } from "@/components/magicui/number-ticker";
+import StatCard from "@/components/StatCard";
 import { BorderBeam } from "@/components/magicui/border-beam";
 import { answerCollection, db, questionCollection } from "@/models/name";
 import { Query } from "node-appwrite";
@@ -58,54 +57,55 @@ const Page = async ({
   return (
     <div className="w-full space-y-12 py-4">
       {/* 1. Stats Dashboard Grid */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-        <MagicCard
-          mode="orb"
-          glowFrom="#f97316"
-          glowTo="#d946ef"
-          glowSize={300}
-          glowBlur={50}
-          className="relative flex flex-col items-center justify-center overflow-hidden rounded-2xl border border-border bg-card/40 p-8 shadow-sm backdrop-blur-md"
-        >
-          <span className="mb-2 text-xs font-bold tracking-wider uppercase text-muted-foreground">
-            Total Reputation
-          </span>
-          <span className="text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-pink-500">
-            <NumberTicker value={user.prefs?.reputation || 0} />
-          </span>
-        </MagicCard>
-
-        <MagicCard
-          mode="orb"
-          glowFrom="#06b6d4"
-          glowTo="#3b82f6"
-          glowSize={300}
-          glowBlur={50}
-          className="relative flex flex-col items-center justify-center overflow-hidden rounded-2xl border border-border bg-card/40 p-8 shadow-sm backdrop-blur-md"
-        >
-          <span className="mb-2 text-xs font-bold tracking-wider uppercase text-muted-foreground">
-            Questions Asked
-          </span>
-          <span className="text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500">
-            <NumberTicker value={questions.total || 0} />
-          </span>
-        </MagicCard>
-
-        <MagicCard
-          mode="orb"
-          glowFrom="#22c55e"
-          glowTo="#06b6d4"
-          glowSize={300}
-          glowBlur={50}
-          className="relative flex flex-col items-center justify-center overflow-hidden rounded-2xl border border-border bg-card/40 p-8 shadow-sm backdrop-blur-md"
-        >
-          <span className="mb-2 text-xs font-bold tracking-wider uppercase text-muted-foreground">
-            Answers Contributed
-          </span>
-          <span className="text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-cyan-500">
-            <NumberTicker value={answers.total || 0} />
-          </span>
-        </MagicCard>
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <StatCard
+          label="Total Reputation"
+          value={Number(user.prefs?.reputation) || 0}
+          from="#f97316"
+          to="#d946ef"
+          gradient="from-orange-500 to-pink-500"
+        />
+        <StatCard
+          label="Questions Asked"
+          value={questions.total || 0}
+          from="#06b6d4"
+          to="#3b82f6"
+          gradient="from-cyan-500 to-blue-500"
+        />
+        <StatCard
+          label="Answers Contributed"
+          value={answers.total || 0}
+          from="#22c55e"
+          to="#06b6d4"
+          gradient="from-emerald-500 to-cyan-500"
+        />
+        <StatCard
+          label="Practice Points"
+          value={Number(user.prefs?.points) || 0}
+          from="#a855f7"
+          to="#6366f1"
+          gradient="from-purple-500 to-indigo-500"
+        />
+        <StatCard
+          label="Current Streak"
+          value={Number(user.prefs?.streak) || 0}
+          from="#f97316"
+          to="#ef4444"
+          gradient="from-orange-500 to-red-500"
+          caption={
+            (Number(user.prefs?.streak) || 0) === 1 ? "day in a row" : "days in a row"
+          }
+        />
+        <StatCard
+          label="Best Streak"
+          value={Number(user.prefs?.bestStreak) || 0}
+          from="#eab308"
+          to="#f97316"
+          gradient="from-yellow-500 to-orange-500"
+          caption={
+            (Number(user.prefs?.bestStreak) || 0) === 1 ? "day" : "days"
+          }
+        />
       </div>
 
       {/* 2. Activity Lists */}

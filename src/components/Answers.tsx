@@ -5,6 +5,7 @@ import React from "react";
 import VoteButtons from "./VoteButton";
 import { useAuthStore } from "@/store/auth";
 import { avatar, databases } from "@/models/client/config";
+import { authedJsonHeaders } from "@/models/client/authHeaders";
 import { answerCollection, db } from "@/models/name";
 import RTE, { MarkdownPreview } from "./RTE";
 import Comments from "./CommentSection";
@@ -32,10 +33,10 @@ const Answers = ({
        try {
          const response = await fetch("/api/answer", {
            method: "POST",
+           headers: await authedJsonHeaders(),
            body: JSON.stringify({
              questionId: questionId,
              answer: newAnswer,
-             authorId: user.$id,
            }),
          });
 
@@ -67,6 +68,7 @@ const Answers = ({
        try {
          const response = await fetch("/api/answer", {
            method: "DELETE",
+           headers: await authedJsonHeaders(),
            body: JSON.stringify({
              answerId: answerId,
            }),

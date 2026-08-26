@@ -8,7 +8,33 @@ import { AppwriteException,ID,Models } from "appwrite";
 import {account} from "@/models/client/config";
 
 export interface UserPrefs {
-    reputation : number
+    reputation: number
+    /**
+     * Practice points from solving problems (easy +10, medium +30, hard +100).
+     * Deliberately separate from `reputation`, which stays a pure Q&A metric
+     * moved by +/-1 per answer and vote — merging them would let one hard
+     * problem outweigh 100 upvotes and would silently turn the homepage
+     * "Top Contributors" board into a problem-solving ranking.
+     */
+    points?: number
+    /** Consecutive days with at least one solved problem, including today. */
+    streak?: number
+    /** Highest streak the user has ever reached. */
+    bestStreak?: number
+    /** Codeforces handle, verified to exist when it was linked. */
+    codeforcesHandle?: string
+    /** LeetCode username, verified to exist when it was linked. */
+    leetcodeHandle?: string
+    /**
+     * When each handle was linked, as unix SECONDS.
+     *
+     * A solve only earns points if the platform timestamped it after this, which
+     * is what stops someone from typing a strong competitor's handle in and
+     * harvesting points for solves that already exist. Stored per platform
+     * because the two handles are linked independently.
+     */
+    codeforcesLinkedAt?: number
+    leetcodeLinkedAt?: number
 }
 
 interface IAuthStore {
@@ -18,6 +44,8 @@ interface IAuthStore {
   hydrated: boolean;
 
   setHydrated(): void;
+  /** Merge freshly-known pref values (points, streak, ...) into the cached user. */
+  setPrefs(prefs: Partial<UserPrefs>): void;
   verifySession(): Promise<void>;
   login(
     email: string,
@@ -49,6 +77,16 @@ export const useAuthStore = create<IAuthStore>()(
 
       setHydrated() {
         set({ hydrated: true });
+      },
+
+      setPrefs(prefs: Partial<UserPrefs>) {
+        // The API routes return the authoritative values after a write, so the
+        // UI can reflect them without waiting for a full verifySession().
+        set((state) => {
+          if (state.user) {
+            state.user.prefs = { ...state.user.prefs, ...prefs };
+          }
+        });
       },
 
       async verifySession() {
